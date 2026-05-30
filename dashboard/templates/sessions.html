@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Sessions · Smart Honeypot{% endblock %}
+{% block content %}
+
+<h2>Attacker sessions</h2>
+<div class="card">
+  {% if sessions %}
+  <table>
+    <tr>
+      <th>#</th><th>Source IP</th><th>Tool</th>
+      <th>Events</th><th>Distinct techniques</th>
+      <th>First seen</th><th>Last seen</th>
+    </tr>
+    {% for s in sessions %}
+    <tr>
+      <td><a href="/sessions/{{ s.id }}">#{{ s.id }}</a></td>
+      <td><code>{{ s.source_ip }}</code></td>
+      <td>{% if s.fingerprint %}<span class="pill">{{ s.fingerprint }}</span>{% else %}<span class="muted">unknown</span>{% endif %}</td>
+      <td>{{ s.event_count }}</td>
+      <td>{{ s.distinct_techniques }}</td>
+      <td class="muted">{{ s.started_at|ts }}</td>
+      <td class="muted">{{ s.last_seen|ts }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p class="muted">No sessions yet.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

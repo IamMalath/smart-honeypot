@@ -1,0 +1,4 @@
+Flask>=2.3,<4.0
+PyYAML>=6.0
+requests>=2.31
+pytest>=7.4

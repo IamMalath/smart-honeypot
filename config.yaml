@@ -1,0 +1,25 @@
+# Smart Honeypot configuration
+honeypot:
+  host: 0.0.0.0
+  port: 8080
+  banner: "Apache/2.4.41 (Ubuntu)"
+
+dashboard:
+  host: 127.0.0.1
+  port: 5000
+
+storage:
+  db_path: data/honeypot.sqlite
+
+session:
+  idle_window_seconds: 600   # 10 minutes - if same IP is silent this long, new session
+
+classifier:
+  enable_sqli: true
+  enable_xss: true
+  enable_lfi: true
+  enable_rce: true
+  enable_scanner: true
+  enable_brute_force: true
+
+python3 ~/simulate.py --host 192.168.1.42 --port 8080 --rounds 1

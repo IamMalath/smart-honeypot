@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Overview · Smart Honeypot{% endblock %}
+{% block content %}
+
+<div class="grid grid-3">
+  <div class="card">
+    <div class="stat-label">Total events</div>
+    <div class="stat">{{ stats.total_events }}</div>
+  </div>
+  <div class="card">
+    <div class="stat-label">Unique attacker IPs</div>
+    <div class="stat">{{ stats.unique_attackers }}</div>
+  </div>
+  <div class="card">
+    <div class="stat-label">Sessions</div>
+    <div class="stat">{{ stats.sessions }}</div>
+  </div>
+</div>
+
+<h2>Top attack categories</h2>
+<div class="card">
+  {% if stats.top_categories %}
+  <table>
+    <tr><th>Category</th><th>Count</th></tr>
+    {% for c in stats.top_categories %}
+    <tr><td><span class="pill">{{ c.category }}</span></td><td>{{ c.c }}</td></tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p class="muted">No malicious activity captured yet. Run <code>python tools/simulate_attacks.py</code>.</p>
+  {% endif %}
+</div>
+
+<div class="grid grid-2" style="margin-top:16px">
+  <div class="card">
+    <div class="stat-label">Top MITRE ATT&amp;CK techniques</div>
+    {% if stats.top_techniques %}
+    <table style="margin-top:10px">
+      <tr><th>ID</th><th>Technique</th><th>Tactic</th><th>Hits</th></tr>
+      {% for t in stats.top_techniques %}
+      <tr>
+        <td><code>{{ t.technique_id }}</code></td>
+        <td>{{ t.technique_name }}</td>
+        <td><span class="muted">{{ t.tactic }}</span></td>
+        <td>{{ t.c }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}<p class="muted">No technique hits yet.</p>{% endif %}
+  </div>
+  <div class="card">
+    <div class="stat-label">Top attacker IPs</div>
+    {% if stats.top_attackers %}
+    <table style="margin-top:10px">
+      <tr><th>Source IP</th><th>Events</th></tr>
+      {% for a in stats.top_attackers %}
+      <tr><td><code>{{ a.source_ip }}</code></td><td>{{ a.c }}</td></tr>
+      {% endfor %}
+    </table>
+    {% else %}<p class="muted">Nothing yet.</p>{% endif %}
+  </div>
+</div>
+
+<h2>Activity (events per minute, last 60 min)</h2>
+<div class="card">
+  {% if events_per_minute %}
+    {% set max_c = events_per_minute|map(attribute=1)|max %}
+    <div style="display:flex;align-items:flex-end;gap:3px;height:120px;">
+      {% for bucket, c in events_per_minute %}
+      <div title="bucket {{ bucket }}: {{ c }} events"
+           style="flex:1;background:var(--accent);min-width:6px;
+                  height:{{ (c / max_c * 100)|round(1) }}%;
+                  border-radius:2px 2px 0 0;opacity:0.8"></div>
+      {% endfor %}
+    </div>
+    <div class="muted" style="margin-top:6px;font-size:11px">
+      {{ events_per_minute|length }} 1-minute buckets, max {{ max_c }} events/min
+    </div>
+  {% else %}
+    <p class="muted">No traffic in the last hour.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

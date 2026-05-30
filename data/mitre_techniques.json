@@ -1,0 +1,13 @@
+{
+  "T1595.002": {"name": "Active Scanning: Vulnerability Scanning", "tactic": "Reconnaissance"},
+  "T1190":     {"name": "Exploit Public-Facing Application",        "tactic": "Initial Access"},
+  "T1110.001": {"name": "Brute Force: Password Guessing",            "tactic": "Credential Access"},
+  "T1078.001": {"name": "Valid Accounts: Default Accounts",          "tactic": "Initial Access"},
+  "T1059":     {"name": "Command and Scripting Interpreter",         "tactic": "Execution"},
+  "T1059.004": {"name": "Command and Scripting Interpreter: Unix Shell", "tactic": "Execution"},
+  "T1059.007": {"name": "Command and Scripting Interpreter: JavaScript", "tactic": "Execution"},
+  "T1083":     {"name": "File and Directory Discovery",              "tactic": "Discovery"},
+  "T1505.003": {"name": "Server Software Component: Web Shell",      "tactic": "Persistence"},
+  "T1552.001": {"name": "Unsecured Credentials: Credentials In Files", "tactic": "Credential Access"},
+  "T1018":     {"name": "Remote System Discovery",                   "tactic": "Discovery"}
+}

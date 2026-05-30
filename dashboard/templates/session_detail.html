@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Session #{{ session.id }} · Smart Honeypot{% endblock %}
+{% block content %}
+
+<p><a href="/sessions">&larr; All sessions</a></p>
+
+<h2>Session #{{ session.id }} · <code>{{ session.source_ip }}</code></h2>
+
+<div class="grid grid-3">
+  <div class="card">
+    <div class="stat-label">Events</div>
+    <div class="stat">{{ session.event_count }}</div>
+  </div>
+  <div class="card">
+    <div class="stat-label">First seen</div>
+    <div style="font-size:14px;margin-top:8px">{{ session.started_at|ts }}</div>
+    <div class="stat-label" style="margin-top:14px">Last seen</div>
+    <div style="font-size:14px;margin-top:6px">{{ session.last_seen|ts }}</div>
+  </div>
+  <div class="card">
+    <div class="stat-label">Tool fingerprint</div>
+    <div style="font-size:18px;margin-top:8px">
+      {% if session.fingerprint %}<span class="pill">{{ session.fingerprint }}</span>
+      {% else %}<span class="muted">unknown</span>{% endif %}
+    </div>
+  </div>
+</div>
+
+<h2>MITRE ATT&amp;CK heatmap</h2>
+<div class="card">
+  {% if techniques %}
+    <div class="heatmap">
+      {% for t in techniques %}
+      <div title="{{ t.tactic }} · {{ t.c }} hits">
+        <code>{{ t.technique_id }}</code> · {{ t.technique_name }} · {{ t.c }}
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="muted">No techniques observed (only benign traffic).</p>
+  {% endif %}
+</div>
+
+<h2>Request timeline</h2>
+<div class="card">
+  {% if events %}
+    {% for e in events %}
+    <div class="timeline-row">
+      <div>
+        <span class="muted">{{ e.ts|ts }}</span>
+        &nbsp;<strong>{{ e.method }}</strong>
+        <code>{{ e.path }}{% if e.query_string %}?{{ e.query_string }}{% endif %}</code>
+        &nbsp;{{ e.severity|severity_badge|safe }}
+        <span class="pill">{{ e.category }}</span>
+        {% for t in e.techniques %}
+          <span class="pill pill-tech" title="{{ t.tactic }}">{{ t.technique_id }}</span>
+        {% endfor %}
+      </div>
+      {% if e.user_agent %}
+        <div class="muted" style="margin-top:4px;font-size:11px">UA: {{ e.user_agent }}</div>
+      {% endif %}
+      {% if e.body %}
+        <pre style="margin-top:8px">{{ e.body[:600] }}{% if e.body|length > 600 %} …(truncated){% endif %}</pre>
+      {% endif %}
+    </div>
+    {% endfor %}
+  {% else %}
+    <p class="muted">No events captured for this session.</p>
+  {% endif %}
+</div>
+
+{% endblock %}
